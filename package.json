@@ -1,0 +1,38 @@
+{
+  "name": "banana-split-api",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "babel src --extensions .js --out-dir dist",
+    "dev": "nodemon --exec babel-node ./src/server.js",
+    "test": "jest --watch",
+    "start": "npm run build && node ./dist/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lpolon/banana-split-api.git"
+  },
+  "author": "Leonardo Polon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lpolon/banana-split-api/issues"
+  },
+  "homepage": "https://github.com/lpolon/banana-split-api#readme",
+  "dependencies": {
+    "@types/jest": "^25.2.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "errorhandler": "^1.5.1",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.5",
+    "babel-jest": "^25.3.0",
+    "jest": "^25.3.0",
+    "nodemon": "^2.0.3"
+  }
+}
