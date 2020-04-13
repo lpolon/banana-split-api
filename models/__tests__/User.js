@@ -1,5 +1,6 @@
-import {connectAndDrop, disconnect} from '../../test/utils/database'
+import {connectAndDrop, disconnect} from '../../test/util/database'
 import {User} from '../../models/User'
+
 describe('the username path:', () => {
   beforeEach(connectAndDrop)
   afterEach(disconnect)
