@@ -19,6 +19,11 @@ describe('the username path:', () => {
     expect(kind).toStrictEqual('required')
   })
 
+})
+
+describe('the User model:', () => {
+  beforeEach(connectAndDrop)
+  afterEach(disconnect)
   it('creates a new user', async done => {
     const username = new User({
       username: 'léo',
