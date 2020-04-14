@@ -44,6 +44,7 @@ describe('the username path:', () => {
     const sameUsername = new User({
       username: 'léo polon',
     })
+    
     await expect(username.validate()).resolves.toBeUndefined()
     await username.save()
 

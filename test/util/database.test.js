@@ -1,28 +1,37 @@
 import mongoose from 'mongoose'
-import {connectAndDrop, disconnect, MONGODB_URI, options} from './database'
+import {connectAndDrop, disconnect, options} from './database'
 import {User} from '../../models/User'
 
-// i understand it is a bit silly that i use done(), async AND then.. catch, however, for now it was important to me to try it out.
-
 describe('The model test setup', () => {
+  const MONGODB_URI_DB = 'mongodb://localhost/banana_TEST_DB'
+  afterAll(async done => {
+    await mongoose.connection.close()
+    done()
+  })
+
   describe('connectAndDrop()', () => {
     afterEach(async done => {
       await mongoose.disconnect()
       done()
     })
-    it('resolves the promise and returns undefined', () => {
+    it('resolves and is undefined', async done => {
       // i didn't find a way to just test if it resolves. It is not important if it returns or not.
-      return expect(connectAndDrop()).resolves.toBeUndefined()
+      await expect(connectAndDrop()).resolves.toBeUndefined()
+      done()
     })
-    it('calls mongoose connect once', () => {
+    it('calls mongoose connect once', async done => {
       jest.spyOn(mongoose, 'connect')
-      return connectAndDrop().then(() =>
-        expect(mongoose.connect).toHaveBeenCalledTimes(1),
-      )
+      await connectAndDrop()
+      expect(mongoose.connect).toHaveBeenCalledTimes(1)
+
+      // clean up
+      await mongoose.connect.mockRestore()
+      done()
     })
     // tentei várias coisas e acabei testando "como eu faria pra conferir na mão"
-    it('has empties all collections after been called', async done => {
-      await mongoose.connect(MONGODB_URI, options)
+    it('empties all collections after been called', async done => {
+      await mongoose.connect(MONGODB_URI_DB, options)
+      await mongoose.connection.db.dropDatabase()
       const user = new User({
         username: 'Léo',
       })
@@ -41,15 +50,18 @@ describe('The model test setup', () => {
   })
   describe('disconnect()', () => {
     beforeEach(async done => {
-      mongoose.connect(MONGODB_URI, options)
+      await mongoose.connect(MONGODB_URI_DB, options)
       done()
     })
-    it('calls mongoose.disconnect()', () => {
+    it('calls mongoose.disconnect()', async done => {
       jest.spyOn(mongoose, 'disconnect')
 
-      disconnect()
+      await disconnect()
 
-      return expect(mongoose.disconnect).toHaveBeenCalledTimes(1)
+      expect(mongoose.disconnect).toHaveBeenCalledTimes(1)
+
+      await mongoose.disconnect.mockRestore()
+      done()
     })
   })
 })

@@ -7,7 +7,7 @@ export const options = {
   useUnifiedTopology: true,
 }
 
-// TODO: Se eu não soubesse que funciona, nem fudendo eu iria confiar que está funcionando. Além disso, deveria estar usando algum mock aqui?
+// TODO: Se eu não soubesse que funciona, nem fudendo eu iria confiar que está funcionando.
 export const connectAndDrop = async () => {
   await mongoose.connect(MONGODB_URI, options)
   await mongoose.connection.db.dropDatabase()
