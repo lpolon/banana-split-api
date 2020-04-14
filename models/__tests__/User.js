@@ -2,8 +2,6 @@ import {connectAndDrop, disconnect} from '../../test/util/database'
 import {User} from '../../models/User'
 import {getMongooseValidationSyncError} from '../../test/util/mongoose-validate'
 describe('the username path:', () => {
-  beforeEach(connectAndDrop)
-  afterEach(disconnect)
   it('is a string', () => {
     const user = new User({
       username: 'Léo',
@@ -18,7 +16,46 @@ describe('the username path:', () => {
     expect(message).toStrictEqual('Path `username` is required.')
     expect(kind).toStrictEqual('required')
   })
+  it('invalidates usernames with less than 3 characters', () => {
+    const shortUsername1 = new User({
+      username: '1_',
+    })
+    const [message, kind] = getMongooseValidationSyncError(
+      shortUsername1,
+      'username',
+    )
+    expect(kind).toStrictEqual('user defined')
+    expect(message).toStrictEqual('invalid username')
+  })
+  it('invalidates usernames with white spaces', () => {
+    const usernameWithWhiteSpace = new User({
+      username: 'leo polon'
+    })
 
+    const [message, kind] = getMongooseValidationSyncError(usernameWithWhiteSpace, 'username')
+
+    expect(kind).toStrictEqual('user defined')
+    expect(message).toStrictEqual('invalid username')
+  })
+
+  it('invalidates usernames with non-alphanumerical values', () => {
+    const invalidUsername1 = new User({
+      username: '@leo'
+    })
+    const invalidUsername2 = new User({
+      username: "(_)_)////D"
+    })
+
+    const [message1, kind1] = getMongooseValidationSyncError(invalidUsername1, 'username')
+    const [message2, kind2] = getMongooseValidationSyncError(invalidUsername2, 'username')
+
+    expect(kind1).toStrictEqual('user defined')
+    expect(message1).toStrictEqual('invalid username')
+
+    expect(kind2).toStrictEqual('user defined')
+    expect(message2).toStrictEqual('invalid username')
+
+  })
 })
 
 describe('the User model:', () => {
@@ -45,7 +82,7 @@ describe('the User model:', () => {
     const sameUsername = new User({
       username: 'leopolon',
     })
-    
+
     await expect(username.validate()).resolves.toBeUndefined()
     await username.save()
 
