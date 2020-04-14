@@ -26,7 +26,7 @@ describe('the User model:', () => {
   afterEach(disconnect)
   it('creates a new user', async done => {
     const username = new User({
-      username: 'léo',
+      username: 'leo',
     })
 
     const savedUser = await username.save()
@@ -39,11 +39,11 @@ describe('the User model:', () => {
   it('throws validation error when #username already exists', async done => {
     expect.assertions(3)
     const username = new User({
-      username: 'léo polon',
+      username: 'leopolon',
     })
 
     const sameUsername = new User({
-      username: 'léo polon',
+      username: 'leopolon',
     })
     
     await expect(username.validate()).resolves.toBeUndefined()
@@ -66,11 +66,11 @@ describe('the User model:', () => {
   it('saves new user when username is unique', async done => {
     expect.assertions(3)
     const username1 = new User({
-      username: 'léo',
+      username: 'leo',
     })
 
     const username2 = new User({
-      username: 'Léo',
+      username: 'Leo',
     })
 
     const savedUser1 = await username1.save()

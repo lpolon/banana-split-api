@@ -33,7 +33,7 @@ describe('The model test setup', () => {
       await mongoose.connect(MONGODB_URI_DB, options)
       await mongoose.connection.db.dropDatabase()
       const user = new User({
-        username: 'Léo',
+        username: 'leo',
       })
       await user.save()
       const queryResult = await User.find()
