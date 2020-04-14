@@ -6,7 +6,16 @@ const userSchema = new Schema(
       type: String,
       required: true,
       // validate pode ser uma função, um array para custom err msg ou array de objetos: [{validator: validator, msg: 'lala'}]
-      validate: [isUsernameUnique, 'Username already taken'],
+      validate: [
+        {
+          validator: isUsernameUnique,
+          msg: 'Username already taken',
+        },
+        {
+          validator: isUsernameAllowed,
+          msg: 'invalid username',
+        },
+      ],
     },
     password: {
       type: String,
@@ -48,6 +57,16 @@ async function isUsernameUnique(usernameValue, done) {
   }
 }
 
+// TODO: talvez precise dividir isso, dependendo de como as mensagens de erro chegar no cliente.
+function isUsernameAllowed(usernameValue) {
+  return (
+    usernameValue.length >= 3 &&
+    // metches a single white space
+    !/\s/.test(usernameValue) &&
+    // only alphanumeric
+    !/\W/.test(usernameValue)
+  )
+}
 
 function isPasswordAllowed(password) {
   return (
