@@ -1,6 +1,6 @@
-import {connectAndDrop, disconnect} from '../../test/util/database'
-import {User} from '../../models/User'
-import {getMongooseValidationSyncError} from '../../test/util/mongoose-validate'
+import {connectAndDrop, disconnect} from '../../../test/util/database'
+import {User} from '../User'
+import {getMongooseValidationSyncError} from '../../../test/util/mongoose-validate'
 describe('the username path:', () => {
   it('is a string', () => {
     const user = new User({
@@ -29,10 +29,13 @@ describe('the username path:', () => {
   })
   it('invalidates usernames with white spaces', () => {
     const usernameWithWhiteSpace = new User({
-      username: 'leo polon'
+      username: 'leo polon',
     })
 
-    const [message, kind] = getMongooseValidationSyncError(usernameWithWhiteSpace, 'username')
+    const [message, kind] = getMongooseValidationSyncError(
+      usernameWithWhiteSpace,
+      'username',
+    )
 
     expect(kind).toStrictEqual('user defined')
     expect(message).toStrictEqual('invalid username')
@@ -40,21 +43,26 @@ describe('the username path:', () => {
 
   it('invalidates usernames with non-alphanumerical values', () => {
     const invalidUsername1 = new User({
-      username: '@leo'
+      username: '@leo',
     })
     const invalidUsername2 = new User({
-      username: "(_)_)////D"
+      username: '(_)_)////D',
     })
 
-    const [message1, kind1] = getMongooseValidationSyncError(invalidUsername1, 'username')
-    const [message2, kind2] = getMongooseValidationSyncError(invalidUsername2, 'username')
+    const [message1, kind1] = getMongooseValidationSyncError(
+      invalidUsername1,
+      'username',
+    )
+    const [message2, kind2] = getMongooseValidationSyncError(
+      invalidUsername2,
+      'username',
+    )
 
     expect(kind1).toStrictEqual('user defined')
     expect(message1).toStrictEqual('invalid username')
 
     expect(kind2).toStrictEqual('user defined')
     expect(message2).toStrictEqual('invalid username')
-
   })
 })
 
