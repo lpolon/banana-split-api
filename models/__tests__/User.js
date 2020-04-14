@@ -1,6 +1,6 @@
 import {connectAndDrop, disconnect} from '../../test/util/database'
 import {User} from '../../models/User'
-
+import {getMongooseValidationSyncError} from '../../test/util/mongoose-validate'
 describe('the username path:', () => {
   beforeEach(connectAndDrop)
   afterEach(disconnect)
@@ -14,11 +14,7 @@ describe('the username path:', () => {
     const user = new User({
       username: '',
     })
-    const {
-      errors: {
-        username: {message, kind},
-      },
-    } = user.validateSync()
+    const [message, kind] = getMongooseValidationSyncError(user, 'username')
     expect(message).toStrictEqual('Path `username` is required.')
     expect(kind).toStrictEqual('required')
   })
