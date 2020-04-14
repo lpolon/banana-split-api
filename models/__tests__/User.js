@@ -22,4 +22,65 @@ describe('the username path:', () => {
     expect(message).toStrictEqual('Path `username` is required.')
     expect(kind).toStrictEqual('required')
   })
+
+  it('creates a new user', async done => {
+    const username = new User({
+      username: 'léo',
+    })
+
+    const savedUser = await username.save()
+    const queryResult = await User.findOne({username: savedUser.username})
+
+    expect(queryResult._id).toStrictEqual(savedUser._id)
+    done()
+  })
+
+  it('throws validation error when #username already exists', async done => {
+    expect.assertions(3)
+    const username = new User({
+      username: 'léo polon',
+    })
+
+    const sameUsername = new User({
+      username: 'léo polon',
+    })
+    await expect(username.validate()).resolves.toBeUndefined()
+    await username.save()
+
+    try {
+      await sameUsername.validate()
+    } catch (error) {
+      const {
+        errors: {
+          username: {message, kind},
+        },
+      } = error
+      expect(message).toStrictEqual('Username already taken')
+      expect(kind).toStrictEqual('user defined')
+    }
+    done()
+  })
+
+  it('saves new user when username is unique', async done => {
+    expect.assertions(3)
+    const username1 = new User({
+      username: 'léo',
+    })
+
+    const username2 = new User({
+      username: 'Léo',
+    })
+
+    const savedUser1 = await username1.save()
+    const queryResult1 = await User.findOne({username: savedUser1.username})
+
+    expect(String(queryResult1._id)).toStrictEqual(String(savedUser1._id))
+
+    await expect(username2.validate()).resolves.toBeUndefined()
+
+    const savedUser2 = await username2.save()
+    const queryResult2 = await User.findOne({username: savedUser2.username})
+    expect(queryResult2._id).toStrictEqual(savedUser2._id)
+    done()
+  })
 })
