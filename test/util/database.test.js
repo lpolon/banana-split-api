@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import {connectAndDrop, disconnect, options} from './database'
-import {User} from '../../models/User'
+import {User} from '../../src/models/User'
 
 describe('The model test setup', () => {
   const MONGODB_URI_DB = 'mongodb://localhost/banana_TEST_DB'
