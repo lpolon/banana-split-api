@@ -63,7 +63,7 @@ describe('the User model:', () => {
     done()
   })
 
-  it('saves new user when username is unique', async done => {
+  it('saves new user when #username is unique', async done => {
     expect.assertions(3)
     const username1 = new User({
       username: 'leo',
