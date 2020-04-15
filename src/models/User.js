@@ -9,11 +9,11 @@ const userSchema = new Schema(
       validate: [
         {
           validator: isUsernameUnique,
-          msg: 'Username already taken',
+          message: 'Username already taken',
         },
         {
           validator: isUsernameAllowed,
-          msg: 'invalid username',
+          message: 'invalid username',
         },
       ],
     },
@@ -58,6 +58,7 @@ async function isUsernameUnique(usernameValue, done) {
 }
 
 // TODO: talvez precise dividir isso, dependendo de como as mensagens de erro chegar no cliente.
+// Daria para jogar erros e pegar a mensagem como "reason"
 function isUsernameAllowed(usernameValue) {
   return (
     usernameValue.length >= 3 &&
