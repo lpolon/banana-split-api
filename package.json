@@ -11,6 +11,7 @@
     "build": "babel src --extensions .js --out-dir dist",
     "dev": "nodemon --exec babel-node ./src/server.js",
     "test": "jest --runInBand",
+    "test:coverage": "npm test -- --coverage",
     "test:watch": "jest --watch",
     "start": "npm run build && node ./dist/server.js"
   },

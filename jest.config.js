@@ -1,3 +1,5 @@
 module.exports = {
-  testEnvironment: 'node'
-};
+  testEnvironment: 'node',
+  // anything that is in the src directory
+  collectCoverageFrom: ['**/src/**/*.js']
+}
