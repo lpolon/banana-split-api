@@ -10,6 +10,7 @@ import errorHandler from 'errorhandler'
 
 import mongoose from 'mongoose'
 
+import indexRouter from './routes/index'
 // setup to deal with DeprecationWarning:
 const mongooseOptions = {
   useNewUrlParser: true,
@@ -22,14 +23,14 @@ mongoose
     console.log(`Connected to Mongo! Database name: "${res.connection.name}"`)
   })
   .catch(err => {
-    console.error('Error connecting to mongo', err)
+    console.error('Error connecting to mongo:', err)
   })
 
 app.use(bodyParser.json())
 app.use(cors())
 app.use(morgan('dev'))
 
-// app.use('/api', apiRouter)
+app.use('/api', indexRouter)
 
 const PORT = process.env.PORT || 4000
 
