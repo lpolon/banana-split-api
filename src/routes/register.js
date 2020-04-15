@@ -1,7 +1,7 @@
 import {Router} from 'express'
 import {User} from '../models/User'
 
-import {isPasswordAllowed} from '../../util/auth'
+import {isPasswordAllowed} from '../util/auth'
 
 import bcrypt from 'bcrypt'
 
