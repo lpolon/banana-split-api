@@ -9,5 +9,20 @@
     "strict": ["error", "never"],
     "no-unused-vars": "off"
   },
-  "env": { "node": true, "jest": true }
+  "env": { "node": true, "jest": true },
+  "overrides": [
+    {
+      "files": "**/*.ts",
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "plugins": ["@typescript-eslint/eslint-plugin"],
+      "extends": [
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "eslint-config-prettier/@typescript-eslint"
+      ]
+    }
+  ]
 }
