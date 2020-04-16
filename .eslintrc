@@ -1,0 +1,13 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  // the last overrides the previous
+  "extends": ["eslint:recommended", "eslint-config-prettier"],
+  "rules": {
+    "strict": ["error", "never"],
+    "no-unused-vars": "off"
+  },
+  "env": { "node": true, "jest": true }
+}
