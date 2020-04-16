@@ -1,6 +1,6 @@
-import {connectAndDrop, disconnect} from '../../../test/util/database'
-import {User} from '../User'
-import {getMongooseValidationSyncError} from '../../../test/util/mongoose-validate'
+import { connectAndDrop, disconnect } from '../../../test/util/database'
+import { User } from '../User'
+import { getMongooseValidationSyncError } from '../../../test/util/mongoose-validate'
 describe('the username path:', () => {
   it('is a string', () => {
     const user = new User({
@@ -75,7 +75,7 @@ describe('the User model:', () => {
     })
 
     const savedUser = await username.save()
-    const queryResult = await User.findOne({username: savedUser.username})
+    const queryResult = await User.findOne({ username: savedUser.username })
 
     expect(queryResult._id).toStrictEqual(savedUser._id)
     done()
@@ -99,7 +99,7 @@ describe('the User model:', () => {
     } catch (error) {
       const {
         errors: {
-          username: {message, kind},
+          username: { message, kind },
         },
       } = error
       expect(message).toStrictEqual('Username already taken')
@@ -119,14 +119,14 @@ describe('the User model:', () => {
     })
 
     const savedUser1 = await username1.save()
-    const queryResult1 = await User.findOne({username: savedUser1.username})
+    const queryResult1 = await User.findOne({ username: savedUser1.username })
 
     expect(String(queryResult1._id)).toStrictEqual(String(savedUser1._id))
 
     await expect(username2.validate()).resolves.toBeUndefined()
 
     const savedUser2 = await username2.save()
-    const queryResult2 = await User.findOne({username: savedUser2.username})
+    const queryResult2 = await User.findOne({ username: savedUser2.username })
     expect(queryResult2._id).toStrictEqual(savedUser2._id)
     done()
   })

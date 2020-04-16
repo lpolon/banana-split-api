@@ -1,4 +1,4 @@
-import {isPasswordAllowed} from '../auth'
+import { isPasswordAllowed } from '../auth'
 
 describe('isPasswordAllowed function', () => {
   it('accepts valid password', () => {

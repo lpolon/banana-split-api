@@ -1,4 +1,4 @@
-import {Schema, model} from 'mongoose'
+import { Schema, model } from 'mongoose'
 
 const userSchema = new Schema(
   {
@@ -48,7 +48,9 @@ No mais: Se eu precisar de novo de validação única, por favor, abstraia melho
 */
 async function isUsernameUnique(usernameValue, done) {
   try {
-    const queryResult = await this.model('User').find({username: usernameValue})
+    const queryResult = await this.model('User').find({
+      username: usernameValue,
+    })
     return queryResult.length === 0 ? true : false
   } catch (error) {
     throw Error(
