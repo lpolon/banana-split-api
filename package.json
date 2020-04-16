@@ -10,9 +10,8 @@
   "scripts": {
     "build": "babel src --extensions .js --out-dir dist",
     "dev": "nodemon --exec babel-node ./src/server.js",
-    "test": "jest --runInBand",
-    "test:coverage": "npm test -- --coverage",
-    "test:watch": "jest --watch",
+    "test": "jest --watch --runInBand",
+    "coverage": "jest --runInBand --coverage",
     "start": "npm run build && node ./dist/server.js"
   },
   "repository": {
