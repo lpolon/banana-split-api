@@ -1,5 +1,5 @@
 module.exports = {
   ...require('./jest-common'),
   testMatch: ['**/database.test.js'],
-  displayName: 'mongoose setup',
+  displayName: { name: 'mongoose setup', color: 'magentaBright' },
 }
