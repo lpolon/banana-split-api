@@ -3,7 +3,7 @@ import { User } from '../models/User';
 
 import { isPasswordAllowed } from '../util/auth';
 
-import bcrypt from 'bcrypt';
+import { hash } from 'bcrypt';
 
 const router = Router();
 
@@ -17,7 +17,7 @@ router.post('/', async (req, res, next) => {
     return res.status(400).json({ message: `password is not strong enough` });
   try {
     const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await hash(password, saltRounds);
     const newUser = new User({
       username,
       password: hashedPassword,
