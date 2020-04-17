@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model } from 'mongoose';
 
 const userSchema = new Schema(
   {
@@ -30,7 +30,7 @@ const userSchema = new Schema(
   {
     timestamps: true,
   },
-)
+);
 /*
  TODO: De quem é a responsabilidade de cryptgrafar o pw?
  O delete: buscar e deletar groupos do mesmo usuário
@@ -50,12 +50,12 @@ async function isUsernameUnique(usernameValue, done) {
   try {
     const queryResult = await this.model('User').find({
       username: usernameValue,
-    })
-    return queryResult.length === 0 ? true : false
+    });
+    return queryResult.length === 0 ? true : false;
   } catch (error) {
     throw Error(
       'Olá. isUserNameUnique foi rejeitada e isso jamais deveria acontecer. Boa sorte. Beijos de luz',
-    )
+    );
   }
 }
 
@@ -68,7 +68,7 @@ function isUsernameAllowed(usernameValue) {
     !/\s/.test(usernameValue) &&
     // only alphanumeric
     !/\W/.test(usernameValue)
-  )
+  );
 }
 
-export const User = model('User', userSchema)
+export const User = model('User', userSchema);

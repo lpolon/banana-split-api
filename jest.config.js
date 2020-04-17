@@ -6,4 +6,4 @@ module.exports = {
     './test/jest.main.js',
     './test/jest.lint.js',
   ],
-}
+};

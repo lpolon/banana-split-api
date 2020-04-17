@@ -9,5 +9,5 @@ export function isPasswordAllowed(password) {
     /[A-Z]/.test(password) &&
     // lowercase letter
     /[a-z]/.test(password)
-  )
+  );
 }

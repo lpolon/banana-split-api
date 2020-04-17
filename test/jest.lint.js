@@ -5,4 +5,4 @@ module.exports = {
   // displayName: { name: 'mongoose setup', color: 'blue' },
   // configurado no package.json para ignorar tudo que estiver no .gitignore
   // testPathIgnorePatterns: ['<rootDir>/test/', '<rootDir>/dist/'],
-}
+};
