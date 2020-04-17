@@ -1,4 +1,4 @@
-import { verify } from 'jsonwebtoken';
+import { verify, sign } from 'jsonwebtoken';
 
 export function isPasswordAllowed(password) {
   return (
@@ -29,4 +29,8 @@ export function authenticateToken(req, res, next) {
     req.user = user;
     next();
   });
+}
+
+export function generateAccessToken(claims) {
+  return sign(claims, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' }); // much longer. 30 min...
 }
