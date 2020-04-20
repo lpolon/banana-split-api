@@ -9,7 +9,7 @@
     "strict": ["error", "never"],
     "no-unused-vars": "off"
   },
-  "env": { "node": true, "jest": true },
+  "env": { "node": true, "jest": true, "es6": true },
   "overrides": [
     {
       "files": "**/*.ts",
