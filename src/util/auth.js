@@ -1,5 +1,8 @@
 import { verify } from 'jsonwebtoken';
+import { compare } from 'bcrypt';
 
+import LocalStrategy from 'passport-local';
+import { User } from '../models/User';
 export function isPasswordAllowed(password) {
   return (
     password.length > 6 &&
@@ -14,7 +17,12 @@ export function isPasswordAllowed(password) {
   );
 }
 
+function isPasswordValid(inputtedPassword, { password: savedHashedPassword }) {
+  return compare(inputtedPassword, savedHashedPassword);
+}
+
 // authentication middleware:
+// TODO: substitute by passport-JWT or express-jwt
 export function authenticateToken(req, res, next) {
   // get the token from header
   const authHeader = req.headers.authorization;
@@ -28,5 +36,20 @@ export function authenticateToken(req, res, next) {
     if (err) return res.sendStatus(403); // 403 => you have a token, but it is no longer valid
     req.user = user;
     next();
+  });
+}
+
+export function getLocalStrategy() {
+  return new LocalStrategy(async (username, password, done) => {
+    let foundUser;
+    try {
+      foundUser = await User.findOne({ username });
+    } catch (error) {
+      return done(error);
+    }
+    if (!foundUser || !isPasswordValid(password, foundUser))
+      return done(null, false, { message: 'username or password is invalid' });
+
+    return done(null, foundUser);
   });
 }

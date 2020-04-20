@@ -10,8 +10,11 @@ import errorHandler from 'errorhandler';
 
 import mongoose from 'mongoose';
 
+import { getLocalStrategy } from './util/auth';
+
 import indexRouter from './routes/index';
-// setup to deal with DeprecationWarning:
+import passport from 'passport';
+
 const mongooseOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -29,6 +32,9 @@ mongoose
 app.use(bodyParser.json());
 app.use(cors());
 app.use(morgan('dev'));
+
+app.use(passport.initialize());
+passport.use(getLocalStrategy());
 
 app.use('/api', indexRouter);
 
