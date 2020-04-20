@@ -1,0 +1,18 @@
+# using VSCode extesion REST Client
+GET http://localhost:4001/api
+###
+POST http://localhost:4001/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "leo2",
+  "password": "Abc123!"
+}
+###
+POST http://localhost:4001/api/auth/login
+Content-Type: application/json
+
+{
+  "username": " leo2",
+  "password": "Abc123!"
+}
