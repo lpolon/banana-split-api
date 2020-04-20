@@ -29,9 +29,9 @@ router.post('/', async (req, res, next) => {
       .json({ message: `new user ${savedUser.username} saved sucessfully` });
   } catch (error) {
     // const usernameObj = error?.errors?.username
-    const usernameObj = error && error.errors && error.errors.username;
+    const { username } = error.errors;
     if (typeof usernameObj === 'undefined') return res.sendStatus(500);
-    const { message } = usernameObj;
+    const { message } = username;
     res.status(400).json({ error: message });
     return next(error);
   }

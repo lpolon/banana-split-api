@@ -1,14 +1,10 @@
 import { Router } from 'express';
-import registerRouter from './register';
-import loginRouter from './login';
-import { authenticateToken } from '../util/auth';
+import authRouter from './auth';
 
 const router = Router();
-router.use('/register', registerRouter);
-router.use('/login', loginRouter);
+router.use('/auth', authRouter);
 
-// monkey-testing auth middleware
-router.get('/', authenticateToken, (req, res, next) => {
+router.get('/', (req, res, next) => {
   res.json({ message: 'hello, world' });
 });
 
