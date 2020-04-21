@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import registerRouter from './register';
-import loginRouter from './login';
+import * as authController from './auth-controller';
 
-const router = Router();
+export default function getAuthRoutes() {
+  const router = Router();
+  router.post('/register', authController.register);
+  router.post('/login', authController.login);
 
-router.use('/login', loginRouter);
-router.use('/register', registerRouter);
-
-export default router;
+  return router;
+}

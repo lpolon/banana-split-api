@@ -1,11 +1,14 @@
-import { Router } from 'express';
-import authRouter from './auth';
+import express from 'express';
+import getAuthRoutes from './auth';
 
-const router = Router();
-router.use('/auth', authRouter);
+export default function getRouter() {
+  const router = express.Router();
+  router.get('/', sayHello);
+  router.use('/auth', getAuthRoutes());
 
-router.get('/', (req, res, next) => {
-  res.json({ message: 'hello, world' });
-});
+  return router;
+}
 
-export default router;
+function sayHello(req, res, next) {
+  return res.json({ message: 'hello, world' });
+}

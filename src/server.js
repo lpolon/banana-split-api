@@ -12,8 +12,8 @@ import mongoose from 'mongoose';
 
 import { getLocalStrategy } from './util/auth';
 
-import indexRouter from './routes/index';
 import passport from 'passport';
+import getRouter from './routes/index';
 
 const mongooseOptions = {
   useNewUrlParser: true,
@@ -36,7 +36,7 @@ app.use(morgan('dev'));
 app.use(passport.initialize());
 passport.use(getLocalStrategy());
 
-app.use('/api', indexRouter);
+app.use('/api', getRouter());
 
 const PORT = process.env.PORT || 4000;
 
