@@ -17,8 +17,14 @@ export function isPasswordAllowed(password) {
   );
 }
 
-function isPasswordValid(inputtedPassword, { password: savedHashedPassword }) {
-  return compare(inputtedPassword, savedHashedPassword);
+function isPasswordValid(inputtedPassword, user) {
+  let hashedPassword;
+  if (user === null) {
+    hashedPassword = '';
+  } else {
+    hashedPassword = user.password;
+  }
+  return compare(inputtedPassword, hashedPassword);
 }
 
 // authentication middleware:
@@ -32,12 +38,13 @@ export function authenticateToken(req, res, next) {
   // is it valid?
   // verify does not return a promise
   verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    console.log(user);
     if (err) return res.sendStatus(403); // 403 => you have a token, but it is no longer valid
     req.user = user;
     next();
   });
 }
+
+// TODO: Eu testei na mão o erro quando: username não existe, quando o password está errado e quando username e password estão OK. Escrever testes.
 
 export function getLocalStrategy() {
   return new LocalStrategy(async (username, password, done) => {
@@ -47,7 +54,7 @@ export function getLocalStrategy() {
     } catch (error) {
       return done(error);
     }
-    if (!foundUser || !isPasswordValid(password, foundUser))
+    if (foundUser === null || !(await isPasswordValid(password, foundUser)))
       return done(null, false, { message: 'username or password is invalid' });
 
     return done(null, foundUser);
