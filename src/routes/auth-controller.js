@@ -64,7 +64,8 @@ export async function login(req, res, next) {
   if (!user) return res.status(400).json(info);
 
   const claims = { sub: user._id };
-  const accessToken = sign(claims, process.env.ACCESS_TOKEN_SECRET);
+  const token = sign(claims, process.env.ACCESS_TOKEN_SECRET);
   // TODO: What else to pass to connect with client?
-  return res.json({ accessToken });
+  // TODO: what exactly am i sending to client?
+  return res.json({ token });
 }
