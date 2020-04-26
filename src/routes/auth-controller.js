@@ -63,9 +63,16 @@ export async function login(req, res, next) {
   );
   if (!user) return res.status(400).json(info);
 
-  const claims = { sub: user._id };
-  const token = sign(claims, process.env.ACCESS_TOKEN_SECRET);
-  // TODO: What else to pass to connect with client?
-  // TODO: what exactly am i sending to client?
-  return res.json({ token });
+  const claims = { id: user._id, username: user.username };
+  const userToken = sign(claims, process.env.ACCESS_TOKEN_SECRET);
+  // TODO: remove unnecessary keys from token bofore sending back. Like 'iat'.
+  return res.json({
+    token: userToken,
+    user: { id: user._id, username: user.username },
+  });
+}
+
+export function me(req, res, next) {
+  if (!req.user) return res.sendStatus(404);
+  res.json({ user: req.user });
 }

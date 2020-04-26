@@ -16,3 +16,6 @@ Content-Type: application/json
   "username": "leo100",
   "password": "Abc123!"
 }
+###
+GET http://localhost:4001/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlYTQ5ODU2ZDExMjhlM2Q5YjYwOWNhZiIsInVzZXJuYW1lIjoibGVvMTAwIiwiaWF0IjoxNTg3ODYyNDIxfQ.-3sKKwbuQyh40uqOYg41K4oNDePhwvHGCqhr5ZqudKQ
