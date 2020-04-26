@@ -29,7 +29,7 @@ function isPasswordValid(inputtedPassword, user) {
 
 // authentication middleware:
 // TODO: substitute by passport-JWT or express-jwt
-export function authenticateToken(req, res, next) {
+export function authenticateTokenMiddleware(req, res, next) {
   // get the token from header
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1]; // TOKEN FROM BEARER TOKEN
@@ -38,7 +38,14 @@ export function authenticateToken(req, res, next) {
   // is it valid?
   // verify does not return a promise
   verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403); // 403 => you have a token, but it is no longer valid
+    if (err) {
+      next(err);
+      return res.sendStatus(403);
+    } // 403 => you have a token, but it is no longer valid
+    console.log(
+      'as informações que eu codifiquei no token precisam estar aqui ou nada faz sentido:',
+      user,
+    );
     req.user = user;
     next();
   });
