@@ -23,10 +23,7 @@ export async function register(req, res, next) {
     const savedUser = await newUser.save();
     // TODO: Send JWT here.
 
-    // TODO: mexi no destructuring do username e quebrei a mensagem de erro, mas não tenho teste pra isso. Deveria ter um teste de integração?
-    res
-      .status(201)
-      .json({ message: `new user ${savedUser.username} saved sucessfully` });
+    // TODO: test throws
   } catch (error) {
     const {
       username: { message },

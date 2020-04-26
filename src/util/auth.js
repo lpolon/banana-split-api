@@ -51,8 +51,9 @@ export function authenticateTokenMiddleware(req, res, next) {
   });
 }
 
-// TODO: Eu testei na mão o erro quando: username não existe, quando o password está errado e quando username e password estão OK. Escrever testes.
-
+/*
+TODO: Write tests to when username is undefined, when password is wrong, when username and password is ok to make sure it is throwing correctly
+*/
 export function getLocalStrategy() {
   return new LocalStrategy(async (username, password, done) => {
     let foundUser;
@@ -63,7 +64,7 @@ export function getLocalStrategy() {
     }
     if (foundUser === null || !(await isPasswordValid(password, foundUser)))
       return done(null, false, { message: 'username or password is invalid' });
-
+    // TODO: Kent omits exp, iat, hash and salt. But i am pretty sure that it is his implementation
     return done(null, foundUser);
   });
 }
