@@ -40,7 +40,6 @@ app.use('/api', getRouter());
 
 const PORT = process.env.PORT || 4000;
 
-// TODO: Lembrar: express pega erros síncronos, erros assíncronos precisam ser tratados chamando next(err) no catch()
 app.use(errorHandler());
 
 app.listen(PORT, () => {
