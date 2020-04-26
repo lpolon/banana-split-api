@@ -1,4 +1,4 @@
-import { verify } from 'jsonwebtoken';
+import { verify, sign } from 'jsonwebtoken';
 import { compare } from 'bcrypt';
 
 import LocalStrategy from 'passport-local';
@@ -25,6 +25,29 @@ function isPasswordValid(inputtedPassword, user) {
     hashedPassword = user.password;
   }
   return compare(inputtedPassword, hashedPassword);
+}
+
+function omit(object, keysArray) {
+  return Object.fromEntries(
+    Object.entries(object).filter(([k]) => !keysArray.includes(k)),
+  );
+}
+
+export function userToJSON(user) {
+  console.log('am i actually removing something from the token?', user);
+  return omit(user, ['exp', 'iat']);
+}
+
+export function getUserToken({ _id: id, username }) {
+  const issuedAt = Math.floor(Date.now() / 1000);
+  const sixtyDaysInSeconds = 60 * 60 * 24 * 60;
+  const claims = {
+    id,
+    username,
+    iat: issuedAt,
+    exp: issuedAt + sixtyDaysInSeconds,
+  };
+  return sign(claims, process.env.ACCESS_TOKEN_SECRET);
 }
 
 // authentication middleware:
