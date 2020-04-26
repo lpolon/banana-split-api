@@ -1,8 +1,15 @@
 import { User } from '../models/User';
-import { isPasswordAllowed } from '../util/auth';
+import { isPasswordAllowed, userToJSON, getUserToken } from '../util/auth';
 import { hash } from 'bcrypt';
 import passport from 'passport';
 import { sign } from 'jsonwebtoken';
+
+function sendAuthenticatedUser(user) {
+  return {
+    ...userToJSON(user),
+    token: getUserToken(user),
+  };
+}
 
 export async function register(req, res, next) {
   const { username, password } = req.body;
@@ -24,6 +31,7 @@ export async function register(req, res, next) {
     // TODO: Send JWT here.
 
     // TODO: test throws
+    res.status(201).json({ user: sendAuthenticatedUser(savedUser) });
   } catch (error) {
     const {
       username: { message },
@@ -59,17 +67,10 @@ export async function login(req, res, next) {
     next,
   );
   if (!user) return res.status(400).json(info);
-
-  const claims = { id: user._id, username: user.username };
-  const userToken = sign(claims, process.env.ACCESS_TOKEN_SECRET);
-  // TODO: remove unnecessary keys from token bofore sending back. Like 'iat'.
-  return res.json({
-    token: userToken,
-    user: { id: user._id, username: user.username },
-  });
+  return res.json({ user: sendAuthenticatedUser(user) });
 }
 
 export function me(req, res, next) {
   if (!req.user) return res.sendStatus(404);
-  res.json({ user: req.user });
+  res.json({ user: sendAuthenticatedUser(req.user) });
 }
