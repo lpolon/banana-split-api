@@ -27,22 +27,22 @@ function isPasswordValid(inputtedPassword, user) {
   return compare(inputtedPassword, hashedPassword);
 }
 
-function omit(object, keysArray) {
+function selectKeysFromUser({ _doc: user } = undefined, keysArray) {
+  if (typeof user === 'undefined') throw Error('No user found');
   return Object.fromEntries(
-    Object.entries(object).filter(([k]) => !keysArray.includes(k)),
+    Object.entries(user).filter(([key]) => keysArray.includes(key)),
   );
 }
 
 export function userToJSON(user) {
-  console.log('am i actually removing something from the token?', user);
-  return omit(user, ['exp', 'iat']);
+  return selectKeysFromUser(user, ['username', '_id']);
 }
 
-export function getUserToken({ _id: id, username }) {
+export function getUserToken({ _id, username }) {
   const issuedAt = Math.floor(Date.now() / 1000);
   const sixtyDaysInSeconds = 60 * 60 * 24 * 60;
   const claims = {
-    id,
+    _id,
     username,
     iat: issuedAt,
     exp: issuedAt + sixtyDaysInSeconds,
@@ -87,7 +87,6 @@ export function getLocalStrategy() {
     }
     if (foundUser === null || !(await isPasswordValid(password, foundUser)))
       return done(null, false, { message: 'username or password is invalid' });
-    // TODO: Kent omits exp, iat, hash and salt. But i am pretty sure that it is his implementation
-    return done(null, foundUser);
+    return done(null, userToJSON(foundUser));
   });
 }

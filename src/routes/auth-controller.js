@@ -28,7 +28,6 @@ export async function register(req, res, next) {
       password: hashedPassword,
     });
     const savedUser = await newUser.save();
-    // TODO: Send JWT here.
 
     // TODO: test throws
     res.status(201).json({ user: sendAuthenticatedUser(savedUser) });
