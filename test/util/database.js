@@ -8,7 +8,7 @@ export const options = {
 };
 export const connectAndDrop = async () => {
   await mongoose.connect(MONGODB_URI, options);
-  await mongoose.connection.db.dropDatabase();
+  await mongoose.connection.dropDatabase();
 };
 
 export const disconnect = async () => {

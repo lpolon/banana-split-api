@@ -31,7 +31,7 @@ describe('The model test setup', () => {
     // tentei várias coisas e acabei testando "como eu faria pra conferir na mão"
     it('empties all collections after been called', async done => {
       await mongoose.connect(MONGODB_URI_DB, options);
-      await mongoose.connection.db.dropDatabase();
+      await mongoose.connection.dropDatabase();
       const user = new User({
         username: 'leo',
       });
