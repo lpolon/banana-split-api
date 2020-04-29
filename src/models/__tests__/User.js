@@ -1,6 +1,7 @@
 import { connectAndDrop, disconnect } from '../../../test/util/database';
 import { User } from '../User';
 import { getMongooseValidationSyncError } from '../../../test/util/mongoose-validate';
+import { resolve } from '../../../test/util/async';
 describe('the username path:', () => {
   it('is a string', () => {
     const user = new User({
@@ -82,7 +83,6 @@ describe('the User model:', () => {
   });
 
   it('throws validation error when #username already exists', async done => {
-    expect.assertions(3);
     const username = new User({
       username: 'leopolon',
     });
@@ -94,17 +94,10 @@ describe('the User model:', () => {
     await expect(username.validate()).resolves.toBeUndefined();
     await username.save();
 
-    try {
-      await sameUsername.validate();
-    } catch (error) {
-      const {
-        errors: {
-          username: { message, kind },
-        },
-      } = error;
-      expect(message).toStrictEqual('Username already taken');
-      expect(kind).toStrictEqual('user defined');
-    }
+    const error = await sameUsername.validate().catch(resolve);
+    expect(error).toMatchInlineSnapshot(
+      `[ValidationError: User validation failed: username: Username already taken]`,
+    );
     done();
   });
 

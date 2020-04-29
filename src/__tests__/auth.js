@@ -52,3 +52,14 @@ test('auth flow', async () => {
 
   expect(meData.user).toEqual(loginData.user);
 });
+// unecessary since i am already testing User model.
+
+// test('username must be unique', async () => {
+//   const registerForm = { username: 'leoleoleo', password: 'Abc123!' };
+//   await api.post(`register`, registerForm);
+//   const error = await api.post(`register`, registerForm).catch(resolve);
+
+//   expect(error).toMatchInlineSnapshot(
+//     `[Error: 400: {"error":"Username already taken"}]`,
+//   );
+// });

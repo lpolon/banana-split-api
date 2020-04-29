@@ -16,4 +16,7 @@ export const handleRequestFailure = ({ response: { status, data } }) => {
   return Promise.reject(error);
 };
 
+// convert a rejected promise into a resolved one with this identity function. So you can assert a returning value instead of inside a catch block. Nice!
+export const resolve = r => r;
+
 export const getData = res => res.data;
