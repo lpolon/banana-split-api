@@ -1,49 +1,38 @@
 import { config } from 'dotenv';
-config();
 import express from 'express';
-const app = express();
-
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import errorHandler from 'errorhandler';
-
-import mongoose from 'mongoose';
-
 import { getLocalStrategy } from './util/auth';
-
 import passport from 'passport';
 import getRouter from './routes/index';
 
-const mongooseOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
+config();
+// adapted from: https://github.com/kentcdodds/testing-node-apps/blob/tjs/src/start.js
+export default function startServer({ port = process.env.PORT } = {}) {
+  const app = express();
+  app.use(cors());
+  app.use(bodyParser.json());
+  app.use(passport.initialize());
+  passport.use(getLocalStrategy());
+  app.use(morgan('dev'));
 
-mongoose
-  .connect(process.env.MONGODB_URI, mongooseOptions)
-  .then(res => {
-    console.log(`Connected to Mongo! Database name: "${res.connection.name}"`);
-  })
-  .catch(err => {
-    console.error('Error connecting to mongo:', err);
+  app.use('/api', getRouter());
+
+  app.use(errorHandler());
+  // TODO: prod error middleware
+
+  return new Promise(resolve => {
+    const server = app.listen(port, () => {
+      console.log(`server listening at ${port}...`);
+      const originalCloseMethod = server.close.bind(server);
+      server.close = () => {
+        return new Promise(resolveClose => {
+          originalCloseMethod(resolveClose);
+        });
+      };
+      resolve(server);
+    });
   });
-
-app.use(bodyParser.json());
-app.use(cors());
-app.use(morgan('dev'));
-
-app.use(passport.initialize());
-passport.use(getLocalStrategy());
-
-app.use('/api', getRouter());
-
-const PORT = process.env.PORT || 4000;
-
-app.use(errorHandler());
-
-app.listen(PORT, () => {
-  console.log(`server listening at ${PORT}...`);
-});
-
-export default app;
+}
