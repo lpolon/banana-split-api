@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import axios from 'axios';
 import startServer from '../server';
+import { handleRequestFailure, getData } from '../../test/util/async';
 const MONGODB_URI_DB = 'mongodb://localhost/banana_TEST_AUTH';
 const options = {
   useNewUrlParser: true,
@@ -22,13 +23,16 @@ afterAll(async done => {
 
 beforeEach(() => mongoose.connection.dropDatabase());
 
+const baseURL = `http://localhost:${port}/api/auth`;
+
+const api = axios.create({ baseURL });
+api.interceptors.response.use(getData, handleRequestFailure);
+
 test('auth flow', async () => {
   const authForm = { username: 'abcd', password: 'Abc123!' };
-  const registerResult = await axios.post(
-    `http://localhost:${port}/api/auth/register`,
-    authForm,
-  );
-  expect(registerResult.data.user).toEqual({
+  const registerData = await api.post(`register`, authForm);
+
+  expect(registerData.user).toEqual({
     /*
     .any() asymetrical matches. assertions about types in general.
     */
@@ -37,18 +41,15 @@ test('auth flow', async () => {
     username: authForm.username,
   });
 
-  const loginResult = await axios.post(
-    `http://localhost:${port}/api/auth/login`,
-    authForm,
-  );
+  const loginData = await api.post(`login`, authForm);
 
-  expect(loginResult.data.user).toEqual(registerResult.data.user);
+  expect(loginData.user).toEqual(registerData.user);
 
-  const meResult = await axios.get(`http://localhost:${port}/api/auth/me`, {
+  const meData = await api.get(`me`, {
     headers: {
-      Authorization: `Bearer ${loginResult.data.user.token}`,
+      Authorization: `Bearer ${loginData.user.token}`,
     },
   });
 
-  expect(meResult.data.user).toEqual(loginResult.data.user);
+  expect(meData.user).toEqual(loginData.user);
 });
