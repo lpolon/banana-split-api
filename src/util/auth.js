@@ -27,10 +27,14 @@ function isPasswordValid(inputtedPassword, user) {
   return compare(inputtedPassword, hashedPassword);
 }
 
-function selectKeysFromUser({ _doc: user } = undefined, keysArray) {
-  if (typeof user === 'undefined') throw Error('No user found');
+function selectKeysFromUser(inputtedUser = undefined, keysArray) {
+  let user;
+  if (typeof inputtedUser === 'undefined') throw Error('No user found');
+  if (Object.prototype.hasOwnProperty.call(inputtedUser, '_doc'))
+    user = inputtedUser._doc;
+  else user = inputtedUser;
   return Object.fromEntries(
-    Object.entries(user).filter(([key]) => keysArray.includes(key)),
+    Object.entries(user).filter(([key, _]) => keysArray.includes(key)),
   );
 }
 
@@ -65,10 +69,6 @@ export function authenticateTokenMiddleware(req, res, next) {
       next(err);
       return res.sendStatus(403);
     } // 403 => you have a token, but it is no longer valid
-    console.log(
-      'as informações que eu codifiquei no token precisam estar aqui ou nada faz sentido:',
-      user,
-    );
     req.user = user;
     next();
   });
