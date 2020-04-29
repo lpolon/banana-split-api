@@ -6,14 +6,9 @@ const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
-/*
-  if i was returning something that would be used throughout the tests, you can define an async callback calling your Promise returning functions.
-  e.g.: beforeEach(async () => {
-    const server = await connectAndDrop()
-  })
-  in this case, jest will wait prom resolution bacause we're returing it with arrow's function implicit return
-*/
+
 let server;
+const port = 5001;
 beforeAll(async done => {
   server = await startServer({ port: 5001 });
   await mongoose.connect(MONGODB_URI_DB, options);
@@ -28,10 +23,24 @@ afterAll(async done => {
 beforeEach(() => mongoose.connection.dropDatabase());
 
 test('auth flow', async () => {
-  // console.log('server:', server);
-  const response = await axios.post('http://localhost:5001/api/auth/register', {
-    username: 'abcd',
-    password: 'Abc123!',
+  const authForm = { username: 'abcd', password: 'Abc123!' };
+  const registerResult = await axios.post(
+    `http://localhost:${port}/api/auth/register`,
+    authForm,
+  );
+  expect(registerResult.data.user).toEqual({
+    /*
+    .any() asymetrical matches. assertions about types in general.
+    */
+    token: expect.any(String),
+    _id: expect.any(String),
+    username: authForm.username,
   });
-  console.log('response:', response.data);
+
+  const loginResult = await axios.post(
+    `http://localhost:${port}/api/auth/login`,
+    authForm,
+  );
+
+  expect(loginResult.data.user).toEqual(registerResult.data.user);
 });
