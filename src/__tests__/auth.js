@@ -9,9 +9,13 @@ const options = {
 };
 
 let server;
-const port = 5001;
+let api;
+
 beforeAll(async done => {
-  server = await startServer({ port: 5001 });
+  server = await startServer();
+  const baseURL = `http://localhost:${server.address().port}/api/auth`;
+  api = axios.create({ baseURL });
+  api.interceptors.response.use(getData, handleRequestFailure);
   await mongoose.connect(MONGODB_URI_DB, options);
   done();
 });
@@ -22,11 +26,6 @@ afterAll(async done => {
 });
 
 beforeEach(() => mongoose.connection.dropDatabase());
-
-const baseURL = `http://localhost:${port}/api/auth`;
-
-const api = axios.create({ baseURL });
-api.interceptors.response.use(getData, handleRequestFailure);
 
 test('auth flow', async () => {
   const authForm = { username: 'abcd', password: 'Abc123!' };
