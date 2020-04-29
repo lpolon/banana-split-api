@@ -87,6 +87,6 @@ export function getLocalStrategy() {
     }
     if (foundUser === null || !(await isPasswordValid(password, foundUser)))
       return done(null, false, { message: 'username or password is invalid' });
-    return done(null, userToJSON(foundUser));
+    return done(null, foundUser);
   });
 }
