@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import axios from 'axios';
 import { startServer } from '../start';
-import { handleRequestFailure, getData } from '../../test/util/async';
+import { handleRequestFailure, getData, resolve } from '../../test/util/async';
 const MONGODB_URI_DB = 'mongodb://localhost/banana_TEST_AUTH';
 const options = {
   useNewUrlParser: true,
@@ -51,4 +51,12 @@ test('The auth flow happy path works', async () => {
   });
 
   expect(meData.user).toEqual(loginData.user);
+});
+
+test('get me unauthenticated returns error', async done => {
+  const error = await api.get(`me`).catch(resolve);
+  expect(error).toMatchInlineSnapshot(
+    `[Error: 401: {"code":"credentials_required","message":"No authorization token was found"}]`,
+  );
+  done();
 });
