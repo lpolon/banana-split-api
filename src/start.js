@@ -3,7 +3,7 @@ import express from 'express';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import errorHandler from 'errorhandler';
+import errorMiddleware from './util/error-middleware';
 import { getLocalStrategy } from './util/auth';
 import passport from 'passport';
 import getRouter from './routes/index';
@@ -21,8 +21,7 @@ function startServer({ port = process.env.PORT } = {}) {
 
   app.use('/api', getRouter());
 
-  app.use(errorHandler());
-  // TODO: prod error middleware
+  app.use(errorMiddleware);
 
   return new Promise(resolve => {
     const server = app.listen(port, () => {
