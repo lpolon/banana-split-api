@@ -25,7 +25,9 @@ export default function startServer({ port = process.env.PORT } = {}) {
 
   return new Promise(resolve => {
     const server = app.listen(port, () => {
-      console.log(`server listening at ${port}...`);
+      if (process.env.NODE_ENV !== 'test') {
+        console.log(`server listening at ${port}...`);
+      }
       const originalCloseMethod = server.close.bind(server);
       server.close = () => {
         return new Promise(resolveClose => {

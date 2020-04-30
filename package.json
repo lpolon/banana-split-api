@@ -10,7 +10,7 @@
   "scripts": {
     "build": "babel src --extensions .js,.ts --out-dir dist",
     "dev": "nodemon --exec babel-node ./src/index.js",
-    "test": "jest --watch --runInBand",
+    "test": "jest --watch",
     "coverage": "jest --runInBand --coverage",
     "start": "npm run build && node ./dist/index.js",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts .",
