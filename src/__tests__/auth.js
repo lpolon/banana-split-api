@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import axios from 'axios';
-import startServer from '../server';
+import { startServer } from '../start';
 import { handleRequestFailure, getData } from '../../test/util/async';
 const MONGODB_URI_DB = 'mongodb://localhost/banana_TEST_AUTH';
 const options = {
@@ -27,7 +27,7 @@ afterAll(async done => {
 
 beforeEach(() => mongoose.connection.dropDatabase());
 
-test('auth flow', async () => {
+test('The auth flow happy path works', async () => {
   const authForm = { username: 'abcd', password: 'Abc123!' };
   const registerData = await api.post(`register`, authForm);
 
@@ -52,14 +52,3 @@ test('auth flow', async () => {
 
   expect(meData.user).toEqual(loginData.user);
 });
-// unecessary since i am already testing User model.
-
-// test('username must be unique', async () => {
-//   const registerForm = { username: 'leoleoleo', password: 'Abc123!' };
-//   await api.post(`register`, registerForm);
-//   const error = await api.post(`register`, registerForm).catch(resolve);
-
-//   expect(error).toMatchInlineSnapshot(
-//     `[Error: 400: {"error":"Username already taken"}]`,
-//   );
-// });

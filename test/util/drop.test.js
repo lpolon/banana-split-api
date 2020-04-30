@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { User } from '../../src/models/User';
 
-const MONGODB_URI = 'mongodb://localhost/banana_SETUP_TEST';
+const MONGODB_URI = 'mongodb://localhost/banana_SETUP_TEST_DROP';
 
 const options = {
   useNewUrlParser: true,
