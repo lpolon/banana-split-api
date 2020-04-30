@@ -1,6 +1,5 @@
-import { connectAndDrop, disconnect } from '../../../test/util/database';
+import mongoose from 'mongoose';
 import { User } from '../User';
-import { getMongooseValidationSyncError } from '../../../test/util/mongoose-validate';
 import { resolve } from '../../../test/util/async';
 describe('the username path:', () => {
   it('is a string', () => {
@@ -13,33 +12,30 @@ describe('the username path:', () => {
     const user = new User({
       username: '',
     });
-    const [message, kind] = getMongooseValidationSyncError(user, 'username');
-    expect(message).toStrictEqual('Path `username` is required.');
-    expect(kind).toStrictEqual('required');
+    const error = user.validateSync();
+    expect(error).toMatchInlineSnapshot(
+      `[ValidationError: User validation failed: username: Path \`username\` is required.]`,
+    );
   });
   it('invalidates usernames with less than 3 characters', () => {
     const shortUsername1 = new User({
       username: '1_',
     });
-    const [message, kind] = getMongooseValidationSyncError(
-      shortUsername1,
-      'username',
+    const error = shortUsername1.validateSync();
+    expect(error).toMatchInlineSnapshot(
+      `[ValidationError: User validation failed: username: invalid username]`,
     );
-    expect(kind).toStrictEqual('user defined');
-    expect(message).toStrictEqual('invalid username');
   });
+
   it('invalidates usernames with white spaces', () => {
     const usernameWithWhiteSpace = new User({
       username: 'leo polon',
     });
 
-    const [message, kind] = getMongooseValidationSyncError(
-      usernameWithWhiteSpace,
-      'username',
+    const error = usernameWithWhiteSpace.validateSync();
+    expect(error).toMatchInlineSnapshot(
+      `[ValidationError: User validation failed: username: invalid username]`,
     );
-
-    expect(kind).toStrictEqual('user defined');
-    expect(message).toStrictEqual('invalid username');
   });
 
   it('invalidates usernames with non-alphanumerical values', () => {
@@ -49,27 +45,28 @@ describe('the username path:', () => {
     const invalidUsername2 = new User({
       username: '(_)_)////D',
     });
-
-    const [message1, kind1] = getMongooseValidationSyncError(
-      invalidUsername1,
-      'username',
-    );
-    const [message2, kind2] = getMongooseValidationSyncError(
-      invalidUsername2,
-      'username',
+    const error1 = invalidUsername1.validateSync();
+    expect(error1).toMatchInlineSnapshot(
+      `[ValidationError: User validation failed: username: invalid username]`,
     );
 
-    expect(kind1).toStrictEqual('user defined');
-    expect(message1).toStrictEqual('invalid username');
-
-    expect(kind2).toStrictEqual('user defined');
-    expect(message2).toStrictEqual('invalid username');
+    const error2 = invalidUsername2.validateSync();
+    expect(error2).toMatchInlineSnapshot(
+      `[ValidationError: User validation failed: username: invalid username]`,
+    );
   });
 });
 
 describe('the User model:', () => {
-  beforeEach(connectAndDrop);
-  afterEach(disconnect);
+  const MONGODB_URI = 'mongodb://localhost/USER_TEST';
+  const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  };
+  beforeAll(() => mongoose.connect(MONGODB_URI, options));
+  afterAll(() => mongoose.connection.close());
+  beforeEach(() => mongoose.connection.dropDatabase());
+
   it('creates a new user', async done => {
     const username = new User({
       username: 'leo',
@@ -116,7 +113,8 @@ describe('the User model:', () => {
 
     expect(String(queryResult1._id)).toStrictEqual(String(savedUser1._id));
 
-    await expect(username2.validate()).resolves.toBeUndefined();
+    const result = await username2.validate();
+    expect(result).toMatchInlineSnapshot(`undefined`);
 
     const savedUser2 = await username2.save();
     const queryResult2 = await User.findOne({ username: savedUser2.username });
