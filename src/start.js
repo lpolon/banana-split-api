@@ -7,10 +7,11 @@ import errorHandler from 'errorhandler';
 import { getLocalStrategy } from './util/auth';
 import passport from 'passport';
 import getRouter from './routes/index';
+import mongoose from 'mongoose';
 
 config();
 // adapted from: https://github.com/kentcdodds/testing-node-apps/blob/tjs/src/start.js
-export default function startServer({ port = process.env.PORT } = {}) {
+function startServer({ port = process.env.PORT } = {}) {
   const app = express();
   app.use(cors());
   app.use(bodyParser.json());
@@ -38,3 +39,24 @@ export default function startServer({ port = process.env.PORT } = {}) {
     });
   });
 }
+
+const mongooseOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
+function startDb() {
+  mongoose
+    .connect(process.env.MONGODB_URI, mongooseOptions)
+    .then(res => {
+      if (process.env.NODE_ENV !== 'test') {
+        console.log(
+          `Connected to Mongo! Database name: "${res.connection.name}"`,
+        );
+      }
+    })
+    .catch(err => {
+      console.error('Error connecting to mongo:', err);
+    });
+}
+
+export { startServer, startDb };
