@@ -3,7 +3,7 @@ import express from 'express';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import errorMiddleware from './util/error-middleware';
+import { errorMiddleware } from './util/error-middleware';
 import { getLocalStrategy } from './util/auth';
 import passport from 'passport';
 import getRouter from './routes/index';
