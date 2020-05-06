@@ -1,5 +1,5 @@
 import { isPasswordAllowed } from '../auth';
-
+// TODO: refactor username and password to use Kent's generate functions
 describe('isPasswordAllowed function', () => {
   it('accepts valid password', () => {
     const validPw = '!aBc123';
