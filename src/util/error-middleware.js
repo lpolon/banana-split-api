@@ -2,7 +2,7 @@
 
 import { UnauthorizedError } from 'express-jwt';
 
-function errorMiddleware(error, req, res, next) {
+export function errorMiddleware(error, req, res, next) {
   if (res.headersSent) {
     next(error);
   } else if (error instanceof UnauthorizedError) {
@@ -19,5 +19,3 @@ function errorMiddleware(error, req, res, next) {
     });
   }
 }
-
-export default errorMiddleware;
