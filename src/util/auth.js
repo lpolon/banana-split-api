@@ -1,5 +1,5 @@
-import { verify, sign } from 'jsonwebtoken';
-import { compare } from 'bcrypt';
+import { sign } from 'jsonwebtoken';
+import { compare, hash } from 'bcrypt';
 
 import LocalStrategy from 'passport-local';
 import expressJWT from 'express-jwt';
@@ -18,6 +18,16 @@ export function isPasswordAllowed(password) {
     // lowercase letter
     /[a-z]/.test(password)
   );
+}
+
+/*
+  created this function to be able to use the same logic without duplication in both auth-controller's register route and test/util/generate to generate user and passwords for testing and avoid duplication.
+*/
+const saltRounds = process.env.NODE_ENV === 'test' ? 1 : 10;
+
+export function getHashedPassword(password) {
+  if (typeof password === 'undefined') throw Error('no password to hash');
+  return hash(password, saltRounds);
 }
 
 function isPasswordValid(inputtedPassword, user) {

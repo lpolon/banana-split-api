@@ -1,8 +1,11 @@
 import { User } from '../models/User';
-import { isPasswordAllowed, userToJSON, getUserToken } from '../util/auth';
-import { hash } from 'bcrypt';
+import {
+  isPasswordAllowed,
+  userToJSON,
+  getUserToken,
+  getHashedPassword,
+} from '../util/auth';
 import passport from 'passport';
-import { sign } from 'jsonwebtoken';
 
 function sendAuthenticatedUser(user) {
   return {
@@ -21,8 +24,7 @@ export async function register(req, res, next) {
   if (!isPasswordAllowed(password))
     return res.status(400).json({ message: `password is not strong enough` });
   try {
-    const saltRounds = 10;
-    const hashedPassword = await hash(password, saltRounds);
+    const hashedPassword = await getHashedPassword(password);
     const newUser = new User({
       username,
       password: hashedPassword,
