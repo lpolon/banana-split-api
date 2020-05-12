@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import axios from 'axios';
 import { startServer } from '../start';
 import { handleRequestFailure, getData, resolve } from '../../test/util/async';
+import * as generate from '../../test/util/generate';
 const MONGODB_URI_DB = 'mongodb://localhost/banana_TEST_AUTH';
 const options = {
   useNewUrlParser: true,
@@ -28,7 +29,7 @@ afterAll(async done => {
 beforeEach(() => mongoose.connection.dropDatabase());
 
 test('The auth flow happy path works', async () => {
-  const authForm = { username: 'abcd', password: 'Abc123!' };
+  const authForm = generate.loginForm();
   const registerData = await api.post(`register`, authForm);
 
   expect(registerData.user).toEqual({
