@@ -1,14 +1,11 @@
 import express from 'express';
 import getAuthRoutes from './auth';
+import getGroupRoutes from './groups';
 
 export default function getRouter() {
   const router = express.Router();
-  router.get('/', sayHello);
   router.use('/auth', getAuthRoutes());
+  router.use('/groups', getGroupRoutes());
 
   return router;
-}
-
-function sayHello(req, res, next) {
-  return res.json({ message: 'hello, world' });
 }
