@@ -67,7 +67,7 @@ export function getUserToken({ _id, username }) {
   return sign(claims, secret);
 }
 
-export const authenticateTokenMiddleware = expressJWT({
+export const authenticateToken = expressJWT({
   secret,
 });
 
