@@ -14,7 +14,7 @@ let api;
 
 beforeAll(async done => {
   server = await startServer();
-  const baseURL = `http://localhost:${server.address().port}/api/auth`;
+  const baseURL = `http://localhost:${server.address().port}/api`;
   api = axios.create({ baseURL });
   api.interceptors.response.use(getData, handleRequestFailure);
   await mongoose.connect(MONGODB_URI_DB, options);
@@ -30,7 +30,7 @@ beforeEach(() => mongoose.connection.dropDatabase());
 
 test('The auth flow happy path works', async () => {
   const authForm = generate.loginForm();
-  const registerData = await api.post(`register`, authForm);
+  const registerData = await api.post(`auth/register`, authForm);
 
   expect(registerData.user).toEqual({
     /*
@@ -41,11 +41,11 @@ test('The auth flow happy path works', async () => {
     username: authForm.username,
   });
 
-  const loginData = await api.post(`login`, authForm);
+  const loginData = await api.post(`auth/login`, authForm);
 
   expect(loginData.user).toEqual(registerData.user);
 
-  const meData = await api.get(`me`, {
+  const meData = await api.get(`auth/me`, {
     headers: {
       Authorization: `Bearer ${loginData.user.token}`,
     },
@@ -54,10 +54,12 @@ test('The auth flow happy path works', async () => {
   expect(meData.user).toEqual(loginData.user);
 });
 
-test('GET /me unauthenticated returns error', async done => {
-  const error = await api.get(`me`).catch(resolve);
+test('GET api/auth/me unauthenticated returns error', async done => {
+  const error = await api.get(`auth/me`).catch(resolve);
   expect(error).toMatchInlineSnapshot(
     `[Error: 401: {"code":"credentials_required","message":"No authorization token was found"}]`,
   );
   done();
 });
+
+test.todo('GET unauthenticated returns error for groups protected routes');
