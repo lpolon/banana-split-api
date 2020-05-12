@@ -62,4 +62,10 @@ test('GET api/auth/me unauthenticated returns error', async done => {
   done();
 });
 
-test.todo('GET unauthenticated returns error for groups protected routes');
+test('GET /api/groups unauthenticated returns error for groups protected routes', async done => {
+  const error = await api.get(`groups`).catch(resolve);
+  expect(error).toMatchInlineSnapshot(
+    `[Error: 401: {"code":"credentials_required","message":"No authorization token was found"}]`,
+  );
+  done();
+});
