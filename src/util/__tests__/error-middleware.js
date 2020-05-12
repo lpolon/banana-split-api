@@ -1,4 +1,4 @@
-import { buildNext, buildRes } from '../../../test/util/generate';
+import { buildReq, buildRes, buildNext } from '../../../test/util/generate';
 import { UnauthorizedError } from 'express-jwt';
 import { errorMiddleware } from '../error-middleware';
 
@@ -6,7 +6,7 @@ test('responds with 401 for express-jwt UnauthorizedError', () => {
   const code = 'some_error_code';
   const message = 'some error message';
   const error = new UnauthorizedError(code, { message });
-  const req = {};
+  const req = buildReq();
   const res = buildRes();
   const next = buildNext();
   errorMiddleware(error, req, res, next);
@@ -22,7 +22,7 @@ test('responds with 401 for express-jwt UnauthorizedError', () => {
 
 test('calls next if headersSent is true', () => {
   const error = new Error(`doesn't matter in this test`);
-  const req = {};
+  const req = buildReq();
   const res = buildRes({ headersSent: true });
   const next = buildNext();
   errorMiddleware(error, req, res, next);
@@ -34,7 +34,7 @@ test('calls next if headersSent is true', () => {
 
 test('responds with 500 and the error object', () => {
   const error = new Error('whatever');
-  const req = {};
+  const req = buildReq();
   const res = buildRes();
   const next = buildNext();
 
