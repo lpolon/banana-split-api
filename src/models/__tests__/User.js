@@ -1,16 +1,20 @@
 import mongoose from 'mongoose';
 import { User } from '../User';
 import { resolve } from '../../../test/util/async';
+import * as generate from '../../../test/util/generate';
+
 describe('the username path:', () => {
   it('is a string', () => {
+    const username = generate.username();
     const user = new User({
-      username: 'Léo',
+      username,
     });
-    expect(user.username).toStrictEqual('Léo');
+    expect(user.username).toStrictEqual(username);
   });
   it('is required', () => {
+    const emptyUsername = '';
     const user = new User({
-      username: '',
+      username: emptyUsername,
     });
     const error = user.validateSync();
     expect(error).toMatchInlineSnapshot(
@@ -18,47 +22,43 @@ describe('the username path:', () => {
     );
   });
   it('invalidates usernames with less than 3 characters', () => {
-    const shortUsername1 = new User({
-      username: '1_',
+    const shortUsername = '1_';
+    const user = new User({
+      username: shortUsername,
     });
-    const error = shortUsername1.validateSync();
+    const error = user.validateSync();
     expect(error).toMatchInlineSnapshot(
       `[ValidationError: User validation failed: username: invalid username]`,
     );
   });
 
   it('invalidates usernames with white spaces', () => {
-    const usernameWithWhiteSpace = new User({
-      username: 'leo polon',
+    const usernameWithWhiteSpace = 'leo polon';
+    const user = new User({
+      username: usernameWithWhiteSpace,
     });
 
-    const error = usernameWithWhiteSpace.validateSync();
+    const error = user.validateSync();
     expect(error).toMatchInlineSnapshot(
       `[ValidationError: User validation failed: username: invalid username]`,
     );
   });
 
   it('invalidates usernames with non-alphanumerical values', () => {
-    const invalidUsername1 = new User({
-      username: '@leo',
+    const invalidUsername = '@leo';
+    const user = new User({
+      username: invalidUsername,
     });
-    const invalidUsername2 = new User({
-      username: '(_)_)////D',
-    });
-    const error1 = invalidUsername1.validateSync();
-    expect(error1).toMatchInlineSnapshot(
-      `[ValidationError: User validation failed: username: invalid username]`,
-    );
 
-    const error2 = invalidUsername2.validateSync();
-    expect(error2).toMatchInlineSnapshot(
+    const error = user.validateSync();
+    expect(error).toMatchInlineSnapshot(
       `[ValidationError: User validation failed: username: invalid username]`,
     );
   });
 });
 
 describe('the User model:', () => {
-  const MONGODB_URI = 'mongodb://localhost/USER_TEST';
+  const MONGODB_URI = 'mongodb://localhost/USER_TEST_2';
   const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -68,11 +68,12 @@ describe('the User model:', () => {
   beforeEach(() => mongoose.connection.dropDatabase());
 
   it('creates a new user', async done => {
-    const username = new User({
-      username: 'leo',
+    const username = generate.username();
+    const user = new User({
+      username,
     });
 
-    const savedUser = await username.save();
+    const savedUser = await user.save();
     const queryResult = await User.findOne({ username: savedUser.username });
 
     expect(queryResult._id).toStrictEqual(savedUser._id);
@@ -80,45 +81,22 @@ describe('the User model:', () => {
   });
 
   it('throws validation error when #username already exists', async done => {
-    const username = new User({
-      username: 'leopolon',
+    const username = generate.username();
+    const user = new User({
+      username,
     });
 
-    const sameUsername = new User({
-      username: 'leopolon',
+    const sameUser = new User({
+      username,
     });
 
-    await expect(username.validate()).resolves.toBeUndefined();
-    await username.save();
+    await expect(user.validate()).resolves.toBeUndefined();
+    await user.save();
 
-    const error = await sameUsername.validate().catch(resolve);
+    const error = await sameUser.validate().catch(resolve);
     expect(error).toMatchInlineSnapshot(
       `[ValidationError: User validation failed: username: Username already taken]`,
     );
-    done();
-  });
-
-  it('saves more than one unique user', async done => {
-    expect.assertions(3);
-    const username1 = new User({
-      username: 'leo',
-    });
-
-    const username2 = new User({
-      username: 'Leo',
-    });
-
-    const savedUser1 = await username1.save();
-    const queryResult1 = await User.findOne({ username: savedUser1.username });
-
-    expect(String(queryResult1._id)).toStrictEqual(String(savedUser1._id));
-
-    const result = await username2.validate();
-    expect(result).toMatchInlineSnapshot(`undefined`);
-
-    const savedUser2 = await username2.save();
-    const queryResult2 = await User.findOne({ username: savedUser2.username });
-    expect(queryResult2._id).toStrictEqual(savedUser2._id);
     done();
   });
 });

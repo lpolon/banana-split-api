@@ -53,7 +53,7 @@ test('The auth flow happy path works', async () => {
   expect(meData.user).toEqual(loginData.user);
 });
 
-test('get me unauthenticated returns error', async done => {
+test('GET /me unauthenticated returns error', async done => {
   const error = await api.get(`me`).catch(resolve);
   expect(error).toMatchInlineSnapshot(
     `[Error: 401: {"code":"credentials_required","message":"No authorization token was found"}]`,

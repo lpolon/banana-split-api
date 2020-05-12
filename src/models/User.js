@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-
 const userSchema = new Schema(
   {
     username: {
@@ -39,9 +38,7 @@ async function isUsernameUnique(usernameValue, done) {
     });
     return queryResult.length === 0 ? true : false;
   } catch (error) {
-    throw Error(
-      'Olá. isUserNameUnique foi rejeitada e isso jamais deveria acontecer. Boa sorte. Beijos de luz',
-    );
+    console.log(error);
   }
 }
 
@@ -50,8 +47,12 @@ function isUsernameAllowed(usernameValue) {
     usernameValue.length >= 3 &&
     // metches a single white space
     !/\s/.test(usernameValue) &&
-    // only alphanumeric
-    !/\W/.test(usernameValue)
+    // only alphanumeric or dot
+    // the regex needs it!
+    // eslint-disable-next-line no-useless-escape
+    !/[^A-Za-z0-9_\.]/.test(usernameValue) &&
+    // no more than one dot
+    !/.*\..*\..*/.test(usernameValue)
   );
 }
 

@@ -1,6 +1,7 @@
-// TODO: Kent's repo use faker to generate username, password, build user and pass it to req.
+import faker from 'faker';
+export const getUsername = faker.internet.userName;
 
-export const buildRes = (overrides = {}) => {
+const buildRes = (overrides = {}) => {
   const res = {
     json: jest.fn(() => res).mockName('json'),
     status: jest.fn(() => res).mockName('status'),
@@ -9,5 +10,7 @@ export const buildRes = (overrides = {}) => {
   return res;
 };
 
-export const buildNext = implementationFn =>
+const buildNext = implementationFn =>
   jest.fn(implementationFn).mockName('next');
+
+export { buildRes, buildNext, getUsername as username };
