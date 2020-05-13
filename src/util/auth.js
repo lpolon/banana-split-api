@@ -6,6 +6,7 @@ import expressJWT from 'express-jwt';
 import { User } from '../models/User';
 
 const secret = String(process.env.ACCESS_TOKEN_SECRET);
+
 export function isPasswordAllowed(password) {
   return (
     password.length > 6 &&
@@ -17,6 +18,20 @@ export function isPasswordAllowed(password) {
     /[A-Z]/.test(password) &&
     // lowercase letter
     /[a-z]/.test(password)
+  );
+}
+
+export function isUsernameAllowed(username) {
+  return (
+    username.length >= 3 &&
+    // metches a single white space
+    !/\s/.test(username) &&
+    // only alphanumeric or dot
+    // the regex needs it!
+    // eslint-disable-next-line no-useless-escape
+    !/[^A-Za-z0-9_\.]/.test(username) &&
+    // no more than one dot
+    !/.*\..*\..*/.test(username)
   );
 }
 
@@ -71,9 +86,7 @@ export const authenticateToken = expressJWT({
   secret,
 });
 
-/*
-TODO: Write tests to when username is undefined, when password is wrong, when username and password is ok to make sure it is throwing correctly
-*/
+// covered in integration test
 export function getLocalStrategy() {
   return new LocalStrategy(async (username, password, done) => {
     let foundUser;

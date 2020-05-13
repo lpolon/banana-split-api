@@ -1,10 +1,10 @@
 import { Schema, model } from 'mongoose';
+import { isUsernameAllowed, isPasswordAllowed } from '../util/auth';
 const userSchema = new Schema(
   {
     username: {
       type: String,
       required: true,
-      // validate pode ser uma função, um array para custom err msg ou array de objetos: [{validator: validator, msg: 'lala'}]
       validate: [
         {
           validator: isUsernameUnique,
@@ -18,6 +18,13 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
+      required: true,
+      validate: [
+        {
+          validator: isPasswordAllowed,
+          message: 'password is not strong enough',
+        },
+      ],
     },
     groups: [
       {
@@ -31,29 +38,11 @@ const userSchema = new Schema(
   },
 );
 
-async function isUsernameUnique(usernameValue, done) {
-  try {
-    const queryResult = await this.model('User').find({
-      username: usernameValue,
-    });
-    return queryResult.length === 0 ? true : false;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-function isUsernameAllowed(usernameValue) {
-  return (
-    usernameValue.length >= 3 &&
-    // metches a single white space
-    !/\s/.test(usernameValue) &&
-    // only alphanumeric or dot
-    // the regex needs it!
-    // eslint-disable-next-line no-useless-escape
-    !/[^A-Za-z0-9_\.]/.test(usernameValue) &&
-    // no more than one dot
-    !/.*\..*\..*/.test(usernameValue)
-  );
+async function isUsernameUnique(username) {
+  const queryResult = await this.model('User').find({
+    username,
+  });
+  return queryResult.length === 0 ? true : false;
 }
 
 export const User = model('User', userSchema);
