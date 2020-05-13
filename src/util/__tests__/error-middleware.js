@@ -1,6 +1,7 @@
 import { buildReq, buildRes, buildNext } from '../../../test/util/generate';
 import { UnauthorizedError } from 'express-jwt';
 import { errorMiddleware } from '../error-middleware';
+import { Error } from 'mongoose';
 
 test('responds with 401 for express-jwt UnauthorizedError', () => {
   const code = 'some_error_code';
@@ -18,6 +19,21 @@ test('responds with 401 for express-jwt UnauthorizedError', () => {
     message: error.message,
   });
   expect(res.json).toHaveBeenCalledTimes(1);
+});
+
+test('responds with 400 from mongoose ValidationError', () => {
+  const error = new Error.ValidationError();
+  const req = buildReq();
+  const res = buildRes();
+  const next = buildNext();
+
+  errorMiddleware(error, req, res, next);
+  expect(next).not.toHaveBeenCalled();
+  expect(res.status).toHaveBeenCalledTimes(1);
+  expect(res.status).toHaveBeenCalledWith(400);
+  expect(res.json).toHaveBeenCalledWith({
+    message: error.message,
+  });
 });
 
 test('calls next if headersSent is true', () => {
