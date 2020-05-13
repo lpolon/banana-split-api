@@ -1,10 +1,5 @@
 import { User } from '../models/User';
-import {
-  isPasswordAllowed,
-  userToJSON,
-  getUserToken,
-  getHashedPassword,
-} from '../util/auth';
+import { userToJSON, getUserToken, getHashedPassword } from '../util/auth';
 import passport from 'passport';
 
 function sendAuthenticatedUser(user) {
@@ -20,9 +15,6 @@ export async function register(req, res, next) {
     return res.status(400).json({ message: `username can't be blank` });
   if (!password)
     return res.status(400).json({ message: `password can't be blank` });
-
-  if (!isPasswordAllowed(password))
-    return res.status(400).json({ message: `password is not strong enough` });
   try {
     const hashedPassword = await getHashedPassword(password);
     const newUser = new User({
@@ -30,16 +22,9 @@ export async function register(req, res, next) {
       password: hashedPassword,
     });
     const savedUser = await newUser.save();
-
-    // TODO: test throws
     res.status(201).json({ user: sendAuthenticatedUser(savedUser) });
   } catch (error) {
-    const {
-      username: { message },
-    } = error.errors;
-    if (typeof username === 'undefined') return res.sendStatus(500);
-    res.status(400).json({ error: message });
-    return next(error);
+    next(error);
   }
 }
 
