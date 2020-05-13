@@ -10,9 +10,9 @@ const groupSchema = new Schema(
     },
     members: {
       type: [String],
-      // TODO: validate strings: only alpha, no duplicates, max char
+      // TODO: validate strings: only alphanum, no duplicates, max char
     },
-    description: String,
+    description: { type: String },
     expenses: [
       {
         type: Schema.Types.ObjectId,
