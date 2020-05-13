@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { User } from '../../src/models/User';
+import * as generate from '../util/generate';
 
 const MONGODB_URI = 'mongodb://localhost/banana_SETUP_TEST_DROP';
 
@@ -14,7 +15,8 @@ describe('The model test setup', () => {
 
   test('mongoose.connection.dropDatabase() empties all collections after being called', async done => {
     const user = new User({
-      username: 'leo',
+      username: generate.username(),
+      password: generate.password(),
     });
 
     await user.save();
