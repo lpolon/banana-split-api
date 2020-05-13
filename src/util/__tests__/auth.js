@@ -43,3 +43,33 @@ describe('isPasswordAllowed function', () => {
     expect(result).toBe(false);
   });
 });
+
+describe('isUsernameAllowed function', () => {
+  it('returns false username with white spaces', () => {
+    const whitespace = ' ';
+    const usernameWithWhiteSpace = generate.username() + whitespace;
+    const result = isUsernameAllowed(usernameWithWhiteSpace);
+    expect(result).toStrictEqual(false);
+  });
+  it('returns false username with non-alphanumerical values but . or _', () => {
+    const nonAlpha = '@';
+    const usernameWithNonAlphachars = generate.username() + nonAlpha;
+    const result = isUsernameAllowed(usernameWithNonAlphachars);
+    expect(result).toStrictEqual(false);
+  });
+  it('returns false username with less than 3 chars', () => {
+    const shortUsername = 'le';
+    const result = isUsernameAllowed(shortUsername);
+    expect(result).toStrictEqual(false);
+  });
+  it('returns false username with more than one dot', () => {
+    const twoDotsUsername = 'leo.pol.on';
+    const result = isUsernameAllowed(twoDotsUsername);
+    expect(result).toStrictEqual(false);
+  });
+  it('returns true username with one dot', () => {
+    const validUsernameWithDot = 'leo.polon';
+    const result = isUsernameAllowed(validUsernameWithDot);
+    expect(result).toStrictEqual(true);
+  });
+});
