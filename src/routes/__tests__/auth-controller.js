@@ -21,7 +21,12 @@ test('authController.register() returns status 400 when password is not strong e
   done();
 });
 
-test('authController.register() calls userDoc.save() once', async done => {
+/*
+  E se eu quisesse testar doc.save() ao invés de User.create?
+  Pela documentação do mongoose, ele sugere um curso. O controller seria uma função que aceita um model como argumento e retorna funções (como uma classe com métodos). Ou seja, uma DEPENDENCY INJECTION USANDO O REVEALING MODULE PATTERN.
+  Aí faria o stub de user como um model como um objeto com um método .save() e checar se ele foi chamado.
+*/
+test('authController.register() calls User.create() once', async done => {
   const body = generate.loginForm();
   const req = generate.buildReq({ user: null, body });
   const res = generate.buildRes();
