@@ -31,7 +31,7 @@ export async function register(req, res, next) {
       username,
       password: hashedPassword,
     });
-    const savedUser = await newUser.save();
+    const savedUser = await User.create(newUser);
     res.status(201).json({ user: sendAuthenticatedUser(savedUser) });
   } catch (error) {
     next(error);
