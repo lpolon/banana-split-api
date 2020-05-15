@@ -2,6 +2,7 @@
 
 import faker from 'faker';
 import { getUserToken, getHashedPassword } from '../../src/util/auth';
+// import User from '../../src/models/User';
 
 const getUsername = faker.internet.userName;
 // passwords must have at least these kinds of characters to be valid, so we'll
@@ -10,12 +11,19 @@ const getPassword = (...args) => `!0_Oo${faker.internet.password(...args)}`;
 const get_id = faker.random.uuid;
 
 // update it if the user changes
+// TODO: pretty sure that in this project, my buildUser() should return an instance of my User model
+// const user = new User({
+//   username: getUsername(),
+//   password: await getHashedPassword(password),
+//   groups: [],
+//   ...overrides,
+// });
+// return user;
 async function buildUser({ password = getPassword(), ...overrides } = {}) {
   return {
     _id: get_id(),
     username: getUsername(),
     password: await getHashedPassword(password),
-    // Array of group's _id.
     groups: [],
     ...overrides,
   };
