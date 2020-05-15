@@ -1,12 +1,35 @@
 import { Group } from '../models/Group';
 
+export async function setGroup(req, res, next) {
+  const { groupId } = req.params;
+  try {
+    const foundGroup = await Group.findById(groupId);
+    // TODO: what it does actually return when don't find anything?
+    if (!foundGroup)
+      return res
+        .status(404)
+        .json({ message: `group was found with the id of ${groupId}` });
+    // TODO: With tests in place, check if i actually need to convert to string
+    if (String(req.user._id) === String(foundGroup.owner)) {
+      req.group = foundGroup;
+      return next();
+    } else {
+      return res.status(403).json({
+        message: `User with id ${req.user._id} is not authorized to access the list item ${groupId}`,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function getGroups(req, res, next) {
   const {
     user: { _id: userId },
   } = req;
   try {
     const foundGroups = await Group.find({ owner: userId });
-    res.status(200).json(foundGroups);
+    return res.status(200).json(foundGroups);
   } catch (error) {
     next(error);
   }
@@ -24,10 +47,36 @@ export async function createGroup(req, res, next) {
       date,
       owner: userId,
     });
-    const newGroup = await newGroupDoc.save();
-    res.status(201).json({
+    const newGroup = await Group.create(newGroupDoc);
+    return res.status(201).json({
       message: `new group created sucessfully`,
       group: newGroup,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteGroup(req, res, next) {
+  const { _id } = req.group;
+  try {
+    await Group.findByIdAndDelete(_id);
+    return res.status(200).json({ sucess: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateGroup(req, res, next) {
+  const {
+    group: { _id },
+    group,
+  } = req;
+  try {
+    await Group.findByIdAndUpdate(_id, req.body, { new: true });
+    return res.status(200).json({
+      message: `${group.groupName} updated successfully`,
+      group,
     });
   } catch (error) {
     next(error);
