@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { isUsernameAllowed, isPasswordAllowed } from '../util/auth';
+import { isUsernameAllowed } from '../util/auth';
 const userSchema = new Schema(
   {
     username: {
@@ -19,12 +19,6 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      validate: [
-        {
-          validator: isPasswordAllowed,
-          message: 'password is not strong enough',
-        },
-      ],
     },
     groups: [
       {

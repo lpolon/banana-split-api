@@ -43,19 +43,6 @@ describe('the password path', () => {
       `[ValidationError: User validation failed: password: Path \`password\` is required.]`,
     );
   });
-  it('throws validation error for invalid password', () => {
-    const username = generate.username();
-    const invalidPassword = 'password';
-    const user = new User({
-      username,
-      password: invalidPassword,
-    });
-
-    const error = user.validateSync();
-    expect(error).toMatchInlineSnapshot(
-      `[ValidationError: User validation failed: password: password is not strong enough]`,
-    );
-  });
 });
 
 // TODO: How kent does this kind of test in his course?
