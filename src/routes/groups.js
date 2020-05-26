@@ -5,7 +5,6 @@ export default function getGroupRoutes() {
   const router = Router();
   router.get('/', authenticateToken, groupController.getGroups);
   router.post('/', authenticateToken, groupController.createGroup);
-  // TODO: Test these routes
   router.delete(
     '/:groupId',
     groupController.setGroup,

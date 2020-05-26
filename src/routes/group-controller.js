@@ -4,7 +4,7 @@ export async function setGroup(req, res, next) {
   const { groupId } = req.params;
   try {
     const foundGroup = await Group.findById(groupId);
-    // TODO: what it does actually return when don't find anything?
+    // TODO: what it does actually return when it doesn't find anything?
     if (!foundGroup)
       return res
         .status(404)

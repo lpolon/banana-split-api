@@ -45,7 +45,6 @@ describe('the password path', () => {
   });
 });
 
-// TODO: How kent does this kind of test in his course?
 // TODO: test groups when group is deleted or created
 describe('the User model:', () => {
   const MONGODB_URI = 'mongodb://localhost/USER_TEST_2';
