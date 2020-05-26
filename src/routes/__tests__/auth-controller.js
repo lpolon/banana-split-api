@@ -9,7 +9,7 @@ beforeEach(jest.clearAllMocks);
 test('authController.register() returns status 400 when password is not strong enough', async done => {
   const invalidPassword = 'password';
   const body = generate.loginForm({ password: invalidPassword });
-  const req = generate.buildReq({ user: null, body });
+  const req = await generate.buildReq({ user: null, body });
   const res = generate.buildRes();
 
   await authController.register(req, res);
@@ -28,7 +28,7 @@ test('authController.register() returns status 400 when password is not strong e
 */
 test('authController.register() calls User.create() once', async done => {
   const body = generate.loginForm();
-  const req = generate.buildReq({ user: null, body });
+  const req = await generate.buildReq({ user: null, body });
   const res = generate.buildRes();
   const next = generate.buildNext();
   await authController.register(req, res, next);
