@@ -36,11 +36,17 @@ function buildGroup(overrides) {
 }
 
 async function buildUser({ password = getPassword(), ...overrides } = {}) {
+  const _id = get_id();
+  const {
+    groups = overrides.groups
+      ? overrides.groups
+      : buildMany(() => buildGroup({ owner: _id })),
+  } = overrides;
   return {
-    _id: get_id(),
+    _id,
     username: getUsername(),
     password: await getHashedPassword(password),
-    groups: buildMany(buildGroup),
+    groups,
     ...getTimestamps(),
     ...overrides,
   };
@@ -89,8 +95,8 @@ function loginForm(overrides) {
 }
 
 // update it as the app have more stuff in the req
-async function buildReq({ user = buildUser(), ...overrides } = {}) {
-  user = await user;
+async function buildReq({ user, ...overrides } = {}) {
+  user = user ? user : await buildUser();
   const req = { user, body: {}, params: {}, ...overrides };
   return req;
 }
@@ -115,9 +121,10 @@ export {
   buildGroup,
   buildSettle,
   buildExpense,
+  buildMany,
   getUsername as username,
   getPassword as password,
-  get_id as _id,
+  get_id,
   loginForm,
   token,
 };
