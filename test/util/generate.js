@@ -14,10 +14,11 @@ const getTimestamps = () => ({
   updatedAt: faker.date.between(faker.date.past(1), new Date()),
 });
 
-const randomPositiveInt = max => Math.floor(Math.random() * max) + 1;
+const randomPositiveInt = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1)) + min;
 
 function buildMany(factoryFn) {
-  return Array.from({ length: randomPositiveInt(4) }, factoryFn);
+  return Array.from({ length: randomPositiveInt(2, 5) }, factoryFn);
 }
 
 function buildGroup(overrides) {
