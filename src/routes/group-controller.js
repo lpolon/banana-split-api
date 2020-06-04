@@ -35,6 +35,10 @@ export async function getGroups(req, res, next) {
   }
 }
 
+export function getOneGroup(req, res) {
+  return res.json({ group: req.group });
+}
+
 export async function createGroup(req, res, next) {
   const {
     body: { groupName, description = '', date },
