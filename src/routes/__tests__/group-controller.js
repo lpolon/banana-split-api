@@ -14,7 +14,7 @@ jest.mock('../../models/Group.js');
 
 beforeEach(jest.clearAllMocks);
 
-test('getOneGroup return the req.group', async done => {
+test('getOneGroup return the req.group', async () => {
   // no db call to check
   // no need for user in req
   // no mock value to resolve
@@ -26,19 +26,16 @@ test('getOneGroup return the req.group', async done => {
 
   expect(res.json).toHaveBeenCalledWith({ group: req.group });
   expect(res.json).toHaveBeenCalledTimes(1);
-  done();
 });
 
-test('getGroups return all groups from an User', async done => {
-  // they way i created my test factories, I could just call buildUser() and get groups from it. I think that my intention is more clear this way.
+test('getGroups return all groups from an User', async () => {
   const userId = get_id();
   const groups = buildMany(() => buildGroup({ owner: userId }));
   const user = await buildUser({ groups, _id: userId });
 
+  Group.find.mockResolvedValueOnce(groups);
   const req = await buildReq({ user });
   const res = buildRes();
-
-  Group.find.mockResolvedValueOnce(groups);
 
   await groupController.getGroups(req, res);
 
@@ -52,8 +49,53 @@ test('getGroups return all groups from an User', async done => {
   expect(res.status).toHaveBeenCalledTimes(1);
   expect(res.json).toHaveBeenCalledTimes(1);
   expect(res.json).toHaveBeenCalledWith(groups);
-
-  done();
 });
+
+test('setGroup sets group to req', async () => {
+  const user = await buildUser();
+  const group = buildGroup({ owner: user._id });
+  Group.findById.mockResolvedValueOnce(group);
+  const req = await buildReq({ user, params: { groupId: group._id } });
+  const res = buildRes();
+  const next = buildNext();
+
+  await groupController.setGroup(req, res, next);
+
+  expect(Group.findById).toHaveBeenCalledTimes(1);
+  expect(Group.findById).toHaveBeenCalledWith(group._id);
+  expect(next).toHaveBeenCalledTimes(1);
+  expect(next).toHaveBeenCalledWith(/* nothing */);
+});
+
+test('setGroup returns a 404 error if the group does not exist', async () => {
+  Group.findById.mockResolvedValueOnce(null);
+
+  const fakeGroupId = 'FAKE_GROUP_ID';
+  const req = await buildReq({ params: { groupId: fakeGroupId } });
+  const res = buildRes();
+  const next = buildNext();
+  await groupController.setGroup(req, res, next);
+
+  expect(Group.findById).toHaveBeenCalledTimes(1);
+  expect(Group.findById).toHaveBeenCalledWith(fakeGroupId);
+
+  expect(next).not.toHaveBeenCalled();
+
+  expect(res.status).toHaveBeenCalledTimes(1);
+  expect(res.status).toHaveBeenCalledWith(404);
+
+  expect(res.json).toHaveBeenCalledTimes(1);
+  expect(res.json.mock.calls[0]).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "message": "No group was found with the id of FAKE_GROUP_ID",
+      },
+    ]
+  `);
+});
+
+test.todo(
+  'setGroup return a 403 error if the user is not the owner of the group',
+);
 
 // TODO: finish testing all groupControllers
