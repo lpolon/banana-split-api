@@ -8,9 +8,8 @@ export async function setGroup(req, res, next) {
     if (!foundGroup)
       return res
         .status(404)
-        .json({ message: `group was found with the id of ${groupId}` });
-    // TODO: With tests in place, check if i actually need to convert to string
-    if (String(req.user._id) === String(foundGroup.owner)) {
+        .json({ message: `No group was found with the id of ${groupId}` });
+    if (req.user._id === foundGroup.owner) {
       req.group = foundGroup;
       return next();
     } else {

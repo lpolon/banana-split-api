@@ -55,3 +55,5 @@ test('getGroups return all groups from an User', async done => {
 
   done();
 });
+
+// TODO: finish testing all groupControllers

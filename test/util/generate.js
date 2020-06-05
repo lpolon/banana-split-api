@@ -53,7 +53,7 @@ async function buildUser({ password = getPassword(), ...overrides } = {}) {
   };
 }
 
-// TODO: groups, settles and expenses estão representando mal o próprio schema, principalmente em relação à relação de Owner e Id. Isso provavelmente vai precisar ser alterado durante os testes.
+// TODO: option to put an group owning it.
 function buildSettle(overrides) {
   return {
     _id: get_id(),
