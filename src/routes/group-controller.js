@@ -4,7 +4,6 @@ export async function setGroup(req, res, next) {
   const { groupId } = req.params;
   try {
     const foundGroup = await Group.findById(groupId);
-    // TODO: what it does actually return when it doesn't find anything?
     if (!foundGroup)
       return res
         .status(404)
@@ -64,7 +63,7 @@ export async function deleteGroup(req, res, next) {
   const { _id } = req.group;
   try {
     await Group.findByIdAndDelete(_id);
-    return res.status(200).json({ sucess: true });
+    return res.status(200).json({ success: true });
   } catch (error) {
     next(error);
   }

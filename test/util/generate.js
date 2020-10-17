@@ -97,7 +97,6 @@ function loginForm(overrides) {
 
 // update it as the app have more stuff in the req
 async function buildReq({ user, ...overrides } = {}) {
-  user = user ? user : await buildUser();
   const req = { user, body: {}, params: {}, ...overrides };
   return req;
 }
